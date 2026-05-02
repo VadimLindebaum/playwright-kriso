@@ -44,7 +44,7 @@ test.describe('Search for Books by Keywords', () => {
 
     test('Test search results contain keyword', async () => {
     await page.locator('#top-search-text').click();
-    await page.locator('#top-search-text').fill('tolkien');
+    await page.locator('#top-search-text').fill('Unicorn Activity Book For Kids');
     await page.locator('#top-search-btn-wrap').click();
 
     //TODO check results contain keyword
@@ -52,7 +52,7 @@ test.describe('Search for Books by Keywords', () => {
 
     test('Test search by ISBN', async () => {
     await page.locator('#top-search-text').click();
-    await page.locator('#top-search-text').fill('9780307588371');
+    await page.locator('#top-search-text').fill('9781785356506');
     await page.locator('#top-search-btn-wrap').click();
 
     //TODO check correct book is shown

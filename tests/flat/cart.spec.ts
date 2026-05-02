@@ -37,11 +37,11 @@ test.describe('Add Books to Shopping Cart', () => {
 
   test('Test search by keyword', async () => {
     await page.getByRole('textbox', { name: 'Pealkiri, autor, ISBN, märksõ' }).click();
-    await page.getByRole('textbox', { name: 'Pealkiri, autor, ISBN, märksõ' }).fill('harry potter');
+    await page.getByRole('textbox', { name: 'Pealkiri, autor, ISBN, märksõ' }).fill('Books, Editors of Chartwell');
     await page.getByRole('button', { name: 'Search' }).click();
 
     // parse numeric total from the results text and assert it's > 1
-    const resultsText = await page.locator('.sb-results-total').textContent();
+    const resultsText = await page.locator('.sb-results-total').first().textContent();
     const total = Number((resultsText || '').replace(/\D/g, '')) || 0;
     expect(total).toBeGreaterThan(1);
   }); 
