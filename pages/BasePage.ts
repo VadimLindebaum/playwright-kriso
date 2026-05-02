@@ -15,8 +15,9 @@ export class BasePage {
 
   async acceptCookies() {
     try {
-      const count = await this.consentButton.count();
-      if (count > 0) {
+      // wait briefly for consent to appear, then click if visible
+      if ((await this.consentButton.count()) > 0) {
+        await this.consentButton.waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
         if (await this.consentButton.isVisible()) {
           await this.consentButton.click();
         }
