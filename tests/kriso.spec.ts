@@ -75,12 +75,16 @@ test.describe('Add Books to Shopping Cart', () => {
   });
 
   test('Test add and remove items from cart', async ({ page }) => {
-    await page.getByRole('link', { name: 'Lisa ostukorvi' }).first().click();
+    const addFirst = page.getByRole('link', { name: 'Lisa ostukorvi' }).first();
+    await addFirst.waitFor({ state: 'visible', timeout: 10000 });
+    await addFirst.click();
     await expect(page.locator('.item-messagebox')).toContainText('Toode lisati ostukorvi');
     await expect(page.locator('.cart-products')).toContainText('1');
     await page.locator('.cartbtn-event.back').click();
 
-    await page.getByRole('link', { name: 'Lisa ostukorvi' }).nth(5).click();
+    const addSecond = page.getByRole('link', { name: 'Lisa ostukorvi' }).nth(5);
+    await addSecond.waitFor({ state: 'visible', timeout: 10000 });
+    await addSecond.click();
     await expect(page.locator('.item-messagebox')).toContainText('Toode lisati ostukorvi');
     await expect(page.locator('.cart-products')).toContainText('2');
 
