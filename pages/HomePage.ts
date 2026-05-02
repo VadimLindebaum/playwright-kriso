@@ -36,9 +36,24 @@ export class HomePage extends BasePage {
 
   async addToCartByIndex(index: number) {
     const btn = this.addToCartLink.nth(index);
-    await btn.waitFor({ state: 'visible', timeout: 10000 });
-    await btn.click();
-    await this.addToCartMessage.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+    await expect(btn).toBeVisible({ timeout: 15000 });
+
+    // Click and wait for either the add-to-cart message or a page load/navigation.
+    await Promise.all([
+      btn.click(),
+      (async () => {
+        try {
+          await Promise.race([
+            this.addToCartMessage.waitFor({ state: 'visible', timeout: 15000 }),
+            this.page.waitForLoadState('load', { timeout: 15000 })
+          ]);
+        } catch (e) {
+          // ignore — we'll assert presence later
+        }
+      })(),
+    ]);
+
+    await this.addToCartMessage.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
   }
 
   async verifyAddToCartMessage() {

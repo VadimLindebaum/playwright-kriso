@@ -20,6 +20,7 @@ export class CartPage extends BasePage {
   }
 
   async verifyCartSumIsCorrect() {
+    await this.cartSubtotals.first().waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
     const cartItems = await this.cartSubtotals.all();
 
     let cartItemsSum = 0;
@@ -30,6 +31,7 @@ export class CartPage extends BasePage {
       cartItemsSum += price;
     }
 
+    await this.cartTotal.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
     const basketSumTotalText = await this.cartTotal.textContent();
     const basketSumTotal = Number((basketSumTotalText || '').replace(/[^0-9.,]+/g, '').replace(',', '.')) || 0;
 
