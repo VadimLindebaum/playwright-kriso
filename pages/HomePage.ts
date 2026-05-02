@@ -28,13 +28,17 @@ export class HomePage extends BasePage {
   }
 
   async verifyResultsCountMoreThan(minCount: number) {
+    await this.resultsTotal.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
     const resultsText = await this.resultsTotal.textContent();
     const total = Number((resultsText || '').replace(/\D/g, '')) || 0;
     expect(total).toBeGreaterThan(minCount);
   }
 
   async addToCartByIndex(index: number) {
-    await this.addToCartLink.nth(index).click();
+    const btn = this.addToCartLink.nth(index);
+    await btn.waitFor({ state: 'visible', timeout: 10000 });
+    await btn.click();
+    await this.addToCartMessage.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   }
 
   async verifyAddToCartMessage() {
@@ -52,6 +56,16 @@ export class HomePage extends BasePage {
   async openShoppingCart() {
     await this.forwardButton.click();
     return new CartPage(this.page);
+  }
+
+  async searchAndWait(keyword: string) {
+    await this.searchInput.click();
+    await this.searchInput.fill(keyword);
+    await this.searchButton.click();
+    await Promise.allSettled([
+      this.resultsTotal.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {}),
+      this.noResultsMessage.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {}),
+    ]);
   }
 
   async verifyNoProductsFoundMessage() {
