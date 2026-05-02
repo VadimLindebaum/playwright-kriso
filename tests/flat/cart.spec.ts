@@ -23,7 +23,12 @@ test.describe('Add Books to Shopping Cart', () => {
     page = await context.newPage();
 
     await page.goto('https://www.kriso.ee/');
-    await page.getByRole('button', { name: 'Nõustun' }).click();
+    try {
+      const consent = page.getByRole('button', { name: 'Nõustun' });
+      if ((await consent.count()) > 0 && await consent.isVisible()) await consent.click();
+    } catch (e) {
+      // ignore
+    }
   });
 
   test.afterAll(async () => {

@@ -14,7 +14,12 @@ test.describe('Search for Books by Keywords', () => {
     const context = await browser.newContext();
     page = await context.newPage();
     await page.goto('https://www.kriso.ee/');
-    await page.getByRole('button', { name: 'Nõustun' }).click();
+    try {
+      const consent = page.getByRole('button', { name: 'Nõustun' });
+      if ((await consent.count()) > 0 && await consent.isVisible()) await consent.click();
+    } catch (e) {
+      // ignore
+    }
   });
 
   test.afterAll(async () => {
@@ -53,7 +58,12 @@ test.describe('Navigate Products via Filters', () => {
     const context = await browser.newContext();
     page = await context.newPage();
     await page.goto('https://www.kriso.ee/');
-    await page.getByRole('button', { name: 'Nõustun' }).click();
+    try {
+      const consent = page.getByRole('button', { name: 'Nõustun' });
+      if ((await consent.count()) > 0 && await consent.isVisible()) await consent.click();
+    } catch (e) {
+      // ignore
+    }
   });
 
   test.afterAll(async () => {
@@ -79,7 +89,12 @@ test.describe('Add Books to Shopping Cart', () => {
     const context = await browser.newContext();
     page = await context.newPage();
     await page.goto('https://www.kriso.ee/');
-    await page.getByRole('button', { name: 'Nõustun' }).click();
+    try {
+      const consent = page.getByRole('button', { name: 'Nõustun' });
+      if ((await consent.count()) > 0 && await consent.isVisible()) await consent.click();
+    } catch (e) {
+      // ignore
+    }
   });
 
   test.afterAll(async () => {
