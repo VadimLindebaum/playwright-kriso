@@ -23,6 +23,10 @@ test.describe('POM — Search and Cart flows', () => {
   });
 
   test('POM: add two items and validate cart totals', async () => {
+    // ensure product listing is loaded so "Lisa ostukorvi" links appear
+    await home.searchAndWait('Books, Editors of Chartwell');
+    await home.verifyResultsCountMoreThan(0);
+
     await home.addToCartByIndex(0);
     await home.verifyAddToCartMessage();
     await home.verifyCartCount(1);
