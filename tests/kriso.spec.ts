@@ -6,32 +6,22 @@ import type { Page } from '@playwright/test';
 
 test.describe.configure({ mode: 'serial' });
 
-let page: Page;
-
 test.describe('Search for Books by Keywords', () => {
 
-  test.beforeAll(async ({ browser }) => {
-    const context = await browser.newContext();
-    page = await context.newPage();
+  test.beforeEach(async ({ page }) => {
     await page.goto('https://www.kriso.ee/');
     try {
       const consent = page.getByRole('button', { name: 'Nõustun' });
       if ((await consent.count()) > 0 && await consent.isVisible()) await consent.click();
-    } catch (e) {
-      // ignore
-    }
+    } catch (e) {}
   });
 
-  test.afterAll(async () => {
-    await page.context().close();
-  });
-
-  test('Test logo is visible', async () => {
+  test('Test logo is visible', async ({ page }) => {
     const logo = page.locator('.logo-icon');
     await expect(logo).toBeVisible();
   });
 
-  test('Test no products found', async () => {
+  test('Test no products found', async ({ page }) => {
     await page.locator('#top-search-text').click();
     await page.locator('#top-search-text').fill('jaslkfjalskjdkls');
     await page.locator('#top-search-btn-wrap').click();
@@ -39,12 +29,11 @@ test.describe('Search for Books by Keywords', () => {
     await expect(page.locator('.msg.msg-info')).toContainText('Teie poolt sisestatud märksõnale vastavat raamatut ei leitud. Palun proovige uuesti!');
   });
 
-  test('Test search results contain keyword', async () => {
+  test('Test search results contain keyword', async ({ page }) => {
     await page.locator('#top-search-text').click();
     await page.locator('#top-search-text').fill('Unicorn Activity Book For Kids');
     await page.locator('#top-search-btn-wrap').click();
 
-    // basic assertion: there should be at least one result
     const resultsText = await page.locator('.sb-results-total').first().textContent();
     const total = Number((resultsText || '').replace(/\D/g, '')) || 0;
     expect(total).toBeGreaterThan(0);
@@ -54,28 +43,20 @@ test.describe('Search for Books by Keywords', () => {
 
 test.describe('Navigate Products via Filters', () => {
 
-  test.beforeAll(async ({ browser }) => {
-    const context = await browser.newContext();
-    page = await context.newPage();
+  test.beforeEach(async ({ page }) => {
     await page.goto('https://www.kriso.ee/');
     try {
       const consent = page.getByRole('button', { name: 'Nõustun' });
       if ((await consent.count()) > 0 && await consent.isVisible()) await consent.click();
-    } catch (e) {
-      // ignore
-    }
+    } catch (e) {}
   });
 
-  test.afterAll(async () => {
-    await page.context().close();
-  });
-
-  test('Test logo & search present', async () => {
+  test('Test logo & search present', async ({ page }) => {
     await expect(page.locator('.logo-icon')).toBeVisible();
     await expect(page.locator('#top-search-text')).toBeVisible();
   });
 
-  test('Test navigation contains links', async () => {
+  test('Test navigation contains links', async ({ page }) => {
     const navLinks = page.locator('nav a');
     const count = await navLinks.count();
     expect(count).toBeGreaterThan(0);
@@ -85,23 +66,15 @@ test.describe('Navigate Products via Filters', () => {
 
 test.describe('Add Books to Shopping Cart', () => {
 
-  test.beforeAll(async ({ browser }) => {
-    const context = await browser.newContext();
-    page = await context.newPage();
+  test.beforeEach(async ({ page }) => {
     await page.goto('https://www.kriso.ee/');
     try {
       const consent = page.getByRole('button', { name: 'Nõustun' });
       if ((await consent.count()) > 0 && await consent.isVisible()) await consent.click();
-    } catch (e) {
-      // ignore
-    }
+    } catch (e) {}
   });
 
-  test.afterAll(async () => {
-    await page.context().close();
-  });
-
-  test('Test add and remove items from cart', async () => {
+  test('Test add and remove items from cart', async ({ page }) => {
     await page.getByRole('link', { name: 'Lisa ostukorvi' }).first().click();
     await expect(page.locator('.item-messagebox')).toContainText('Toode lisati ostukorvi');
     await expect(page.locator('.cart-products')).toContainText('1');

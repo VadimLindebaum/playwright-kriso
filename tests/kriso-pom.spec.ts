@@ -11,16 +11,10 @@ test.describe('POM — Search and Cart flows', () => {
   let home: HomePage;
   let cart: CartPage;
 
-  test.beforeAll(async ({ browser, baseURL }) => {
-    const context = await browser.newContext();
-    const page = await context.newPage();
+  test.beforeEach(async ({ page }) => {
     home = new HomePage(page);
     await home.openUrl();
     await home.acceptCookies();
-  });
-
-  test.afterAll(async () => {
-    await (home as any).page.context().close();
   });
 
   test('POM: verify search returns results', async () => {
