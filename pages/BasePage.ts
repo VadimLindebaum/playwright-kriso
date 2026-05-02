@@ -14,7 +14,16 @@ export class BasePage {
   }
 
   async acceptCookies() {
-    await this.consentButton.click();
+    try {
+      const count = await this.consentButton.count();
+      if (count > 0) {
+        if (await this.consentButton.isVisible()) {
+          await this.consentButton.click();
+        }
+      }
+    } catch (e) {
+      // ignore errors if page/context is already closed or button not available
+    }
   }
 
   async verifyLogo() {
